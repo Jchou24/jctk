@@ -1,6 +1,6 @@
-import dill
-# import cPickle as pickle
-import pickle
+# import dill
+import cPickle as pickle
+# import pickle
 import nltk
 from nltk.tag import hmm
 from nltk.corpus import treebank

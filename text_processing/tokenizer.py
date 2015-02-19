@@ -7,6 +7,7 @@
 from nltk.tokenize import sent_tokenize
 from nltk.tokenize import regexp_tokenize
 import nltk.data
+import re
 
 def para2sents(paragraph,language="english"):
     try:
@@ -17,7 +18,7 @@ def para2sents(paragraph,language="english"):
         return sent_tokenize(paragraph)
 
 def sent2chunks(sentence):
-    return [ s.strip() for s in sentence.split(",") ]
+    return [ s.strip() for s in re.split(",|:|;",sentence) ]
 
 def sent2words(sentence,cond="[\w']+"):
     # regexp_tokenize("Can't is a contraction.", "[\w']+")
@@ -25,7 +26,7 @@ def sent2words(sentence,cond="[\w']+"):
     return regexp_tokenize(sentence, cond)
 
 if __name__ == '__main__':
-    paragraph = "Hi, how are you. Are you ok?"
+    paragraph = "Hi, how are you. Are you ok? Hmm; OK!"
     # paragraph = "Drizzle the rest oil in the pan, toss in the chopped tomatoes, stir and add some salt. Let it cook for about 2 minutes, or till the tomatoes start to reduce its size for a little bit and the juices come out."
     sentences = para2sents(paragraph)
     print sentences

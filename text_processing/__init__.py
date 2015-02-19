@@ -6,12 +6,14 @@
 #         sentence to word:      sent2words
 #     stemmer:    stem
 #     lemmatizer: lemmatize
-#     pos tagger
-#     chunker
+#     pos tagger: pos_tagger
+#     chunker:    TagChunker
+#     corpus
 
 from normalizer import *
 from tokenizer import *
 from stemmer import *
 from lemmatizer import *
 from pos_tagger import pos_tagger
-from chunker import *
+from chunker import TagChunker
+from corpus import *
