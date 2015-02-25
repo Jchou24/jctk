@@ -11,7 +11,7 @@ corpus_description = {
         ref: http://www.cnts.ua.ac.be/conll2000/chunking/
     """,
     'nps_chat':"""
-        maintain by nus(National University of Singapore)
+        maintain by NUS(National University of Singapore)
         10k IM chat posts, POS-tagged and dialogue-act tagged
         Internet Chatroom Conversations corpus
         more data: http://wing.comp.nus.edu.sg:8080/SMSCorpus/history.jsp

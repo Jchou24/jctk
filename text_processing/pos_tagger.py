@@ -40,7 +40,7 @@ class pos_tagger():
 
     def _tagger_dict(self,using_tagger,train_sents):
         tagger_dict = {
-            "backoff": backoff_tagger(train_sents, [UnigramTagger, BigramTagger, TrigramTagger], backoff=DefaultTagger('NN')),
+            "backoff": backoff_tagger(train_sents, [UnigramTagger, BigramTagger, TrigramTagger], backoff=DefaultTagger("NN")),
             "bayes":   ClassifierBasedPOSTagger(train=train_sents),
             "hmm":     hmm_tagger(train_sents),
 
@@ -71,7 +71,7 @@ class pos_tagger():
     def _apply_tagger(self,tagger, corpus):
         return [tagger.tag(nltk.tag.untag(sent)) for sent in corpus]
 
-    def cross_calidation(self,nfold=3):
+    def cross_validation(self,nfold=3):
         fold_size = len(self.train_sents)/nfold
         for i in range(nfold):
             train_sents = self.train_sents[:i*fold_size] + self.train_sents[(i+1)*fold_size:]
@@ -120,12 +120,268 @@ if __name__ == '__main__':
     # 0.87
     # postagger = pos_tagger(using_tagger='hmm') # 0.85510946005
     # 0.008
-    # postagger.cross_calidation(3)
-    # postagger.evaluation()
-
-    # demo_pos()
+    # postagger.cross_validation(3)
+    postagger.evaluation()
 
     # from nltk.corpus import brown
     # print brown.tagged_sents(categories='news')[:10]
     # print treebank.tagged_sents()[:10]
     # print load_pos(10)[0]
+
+# Backoff
+# ============================== Evaluate Fold: 0 ==============================
+# using_tagger: backoff
+#  ori tag set: set([u'PRP$', u'VBG', u'VBD', u'``', u'VBN', u'POS', u"''", u'VBP', u'WDT', u'JJ', u'WP', u'VBZ', u'DT', u'RP', u'$', u'NN', u'FW', u',', u'.', u'TO', u'PRP', u'RB', u'-LRB-', u':', u'NNS', u'NNP', u'VB', u'WRB', u'CC', u'LS', u'PDT', u'RBS', u'RBR', u'CD', u'-NONE-', u'EX', u'IN', u'WP$', u'MD', u'NNPS', u'-RRB-', u'JJS', u'JJR', u'SYM', u'UH'])
+# test tag set: set([u'PRP$', u'VBG', u'VBD', u'``', u'VBN', u'POS', u"''", u'VBP', u'WDT', u'JJ', u'WP', u'VBZ', u'DT', u'RP', u'$', 'NN', u',', u'.', u'TO', u'PRP', u'RB', u'-LRB-', u':', u'NNS', u'NNP', u'VB', u'WRB', u'CC', u'LS', u'PDT', u'RBS', u'RBR', u'CD', u'-NONE-', u'EX', u'IN', u'WP$', u'MD', u'NNPS', u'-RRB-', u'JJS', u'JJR'])
+#     Accuracy: 0.851935668809
+#    Precision: 1.0
+#       Recall: 0.933333333333
+#    F-Measure: 0.965517241379
+#        |                                  -                             |
+#        |                                  N                             |
+#        |                                  O                             |
+#        |             N                    N             N               |
+#        |      N      N      I      D      E      J      N               |
+#        |      N      P      N      T      -      J      S      ,      . |
+# -------+----------------------------------------------------------------+
+#     NN | <11.9%>  0.0%   0.0%   0.0%      .   0.1%   0.0%      .      . |
+#    NNP |   4.1%  <5.8%>  0.0%   0.0%      .   0.1%   0.0%      .      . |
+#     IN |   0.1%      .  <9.6%>  0.0%      .   0.0%      .      .      . |
+#     DT |   0.0%      .   0.0%  <8.1%>     .      .      .      .      . |
+# -NONE- |   0.3%      .      .      .  <6.2%>     .      .      .      . |
+#     JJ |   1.9%   0.1%   0.0%   0.0%      .  <3.8%>  0.0%      .      . |
+#    NNS |   1.7%   0.0%      .      .      .   0.0%  <4.2%>     .      . |
+#      , |   0.0%      .      .      .      .      .      .  <4.7%>     . |
+#      . |      .      .      .      .      .      .      .      .  <3.9%>|
+# -------+----------------------------------------------------------------+
+# (row = reference; col = test)
+
+# ==============================================================================
+# ============================== Evaluate Fold: 1 ==============================
+# using_tagger: backoff
+#  ori tag set: set([u'PRP$', u'VBG', u'VBD', u'VB', u'POS', u"''", u'VBP', u'WDT', u'JJ', u'WP', u'VBZ', u'DT', u'#', u'RP', u'$', u'NN', u'FW', u',', u'.', u'TO', u'PRP', u'RB', u'-LRB-', u':', u'NNS', u'NNP', u'``', u'WRB', u'CC', u'LS', u'PDT', u'RBS', u'RBR', u'VBN', u'-NONE-', u'EX', u'IN', u'WP$', u'CD', u'MD', u'NNPS', u'-RRB-', u'JJS', u'JJR', u'UH'])
+# test tag set: set([u'PRP$', u'VBG', u'VBD', u'``', u'POS', u"''", u'VBP', u'WDT', u'JJ', u'WP', u'VBZ', u'DT', u'#', u'RP', u'$', 'NN', u',', u'.', u'TO', u'PRP', u'RB', u'-LRB-', u':', u'NNS', u'NNP', u'VB', u'WRB', u'CC', u'LS', u'PDT', u'RBS', u'RBR', u'VBN', u'-NONE-', u'EX', u'IN', u'WP$', u'CD', u'MD', u'NNPS', u'-RRB-', u'JJS', u'JJR'])
+#     Accuracy: 0.866981594032
+#    Precision: 1.0
+#       Recall: 0.955555555556
+#    F-Measure: 0.977272727273
+#        |                                  -                             |
+#        |                                  N                             |
+#        |                                  O                             |
+#        |                    N             N      N                      |
+#        |      N      I      N      D      E      N      J               |
+#        |      N      N      P      T      -      S      J      ,      . |
+# -------+----------------------------------------------------------------+
+#     NN | <12.3%>  0.0%   0.0%   0.0%      .   0.0%   0.1%      .      . |
+#     IN |   0.0%  <9.3%>     .   0.0%      .      .   0.0%      .      . |
+#    NNP |   2.9%      .  <6.2%>  0.0%      .   0.0%   0.1%      .      . |
+#     DT |   0.0%   0.0%      .  <8.3%>     .      .   0.0%      .      . |
+# -NONE- |   0.5%      .      .      .  <6.1%>     .      .      .      . |
+#    NNS |   1.4%      .   0.0%      .      .  <4.6%>  0.0%      .      . |
+#     JJ |   1.6%   0.0%   0.1%   0.0%      .      .  <3.9%>     .      . |
+#      , |      .      .      .      .      .      .      .  <5.1%>     . |
+#      . |      .      .      .      .      .      .      .      .  <3.7%>|
+# -------+----------------------------------------------------------------+
+# (row = reference; col = test)
+
+# ==============================================================================
+# ============================== Evaluate Fold: 2 ==============================
+# using_tagger: backoff
+#  ori tag set: set([u'PRP$', u'VBG', u'VBD', u'``', u',', u"''", u'VBP', u'WDT', u'JJ', u'WP', u'VBZ', u'DT', u'#', u'RP', u'$', u'NN', u'FW', u'POS', u'.', u'TO', u'PRP', u'RB', u'-LRB-', u':', u'NNS', u'NNP', u'VB', u'WRB', u'CC', u'PDT', u'RBS', u'RBR', u'VBN', u'-NONE-', u'EX', u'IN', u'WP$', u'CD', u'MD', u'NNPS', u'-RRB-', u'JJS', u'JJR'])
+# test tag set: set([u'PRP$', u'VBG', u'VBD', u'``', u',', u"''", u'VBP', u'WDT', u'JJ', u'WP', u'VBZ', u'DT', u'#', u'RP', u'$', 'NN', u'POS', u'.', u'TO', u'PRP', u'RB', u'-LRB-', u':', u'NNS', u'NNP', u'VB', u'WRB', u'CC', u'PDT', u'RBS', u'RBR', u'VBN', u'-NONE-', u'EX', u'IN', u'WP$', u'CD', u'MD', u'NNPS', u'-RRB-', u'JJS', u'JJR', u'UH'])
+#     Accuracy: 0.870955938405
+#    Precision: 0.976744186047
+#       Recall: 0.976744186047
+#    F-Measure: 0.976744186047
+#        |                                  -                             |
+#        |                                  N                             |
+#        |                                  O                             |
+#        |                    N             N      N                      |
+#        |      N      I      N      D      E      N      J      C        |
+#        |      N      N      P      T      -      S      J      D      , |
+# -------+----------------------------------------------------------------+
+#     NN | <13.3%>     .   0.0%   0.0%      .   0.1%   0.2%      .      . |
+#     IN |   0.0%  <9.4%>     .   0.0%      .      .   0.0%      .      . |
+#    NNP |   2.9%      .  <5.6%>  0.0%      .   0.0%   0.1%      .      . |
+#     DT |   0.0%   0.0%      .  <7.7%>     .      .      .      .      . |
+# -NONE- |   0.0%      .      .      .  <6.6%>     .      .      .      . |
+#    NNS |   1.2%      .   0.0%      .      .  <4.6%>     .      .      . |
+#     JJ |   1.4%   0.0%   0.1%      .      .      .  <4.1%>     .      . |
+#     CD |   1.5%      .      .      .      .   0.0%      .  <3.5%>     . |
+#      , |      .      .      .      .      .      .      .      .  <4.8%>|
+# -------+----------------------------------------------------------------+
+# (row = reference; col = test)
+
+# Bayes
+# ============================== Evaluate Fold: 0 ==============================
+# using_tagger: bayes
+#  ori tag set: set([u'PRP$', u'VBG', u'VBD', u'``', u'VBN', u'POS', u"''", u'VBP', u'WDT', u'JJ', u'WP', u'VBZ', u'DT', u'RP', u'$', u'NN', u'FW', u',', u'.', u'TO', u'PRP', u'RB', u'-LRB-', u':', u'NNS', u'NNP', u'VB', u'WRB', u'CC', u'LS', u'PDT', u'RBS', u'RBR', u'CD', u'-NONE-', u'EX', u'IN', u'WP$', u'MD', u'NNPS', u'-RRB-', u'JJS', u'JJR', u'SYM', u'UH'])
+# test tag set: set([u'PRP$', u'VBG', u'VBD', u'``', u'VBN', u'POS', u"''", u'VBP', u'WDT', u'JJ', u'WP', u'VBZ', u'DT', u'#', u'RP', u'$', u'NN', u'FW', u',', u'.', u'TO', u'PRP', u'RB', u'-LRB-', u':', u'NNS', u'NNP', u'VB', u'WRB', u'CC', u'PDT', u'RBS', u'RBR', u'CD', u'-NONE-', u'EX', u'IN', u'WP$', u'MD', u'NNPS', u'-RRB-', u'JJS', u'JJR', u'UH'])
+#     Accuracy: 0.90869315953
+#    Precision: 0.977272727273
+#       Recall: 0.955555555556
+#    F-Measure: 0.966292134831
+#        |                                  -                             |
+#        |                                  N                             |
+#        |                                  O                             |
+#        |             N                    N             N               |
+#        |      N      N      I      D      E      J      N               |
+#        |      N      P      N      T      -      J      S      ,      . |
+# -------+----------------------------------------------------------------+
+#     NN |  <9.9%>  0.1%   0.0%   0.0%      .   0.8%   0.1%      .      . |
+#    NNP |   0.4%  <7.9%>  0.0%   0.1%   0.0%   0.5%   0.2%      .      . |
+#     IN |   0.0%   0.0%  <9.7%>  0.0%      .   0.0%      .      .      . |
+#     DT |   0.0%      .   0.0%  <8.0%>     .   0.0%      .      .      . |
+# -NONE- |      .      .      .      .  <6.5%>     .      .      .      . |
+#     JJ |   0.3%   0.3%   0.0%   0.0%   0.0%  <4.6%>  0.0%      .      . |
+#    NNS |   0.0%   0.0%      .      .      .   0.0%  <5.8%>     .      . |
+#      , |      .      .      .   0.0%      .      .      .  <4.7%>     . |
+#      . |      .      .      .      .      .      .      .      .  <3.9%>|
+# -------+----------------------------------------------------------------+
+# (row = reference; col = test)
+
+# ==============================================================================
+# ============================== Evaluate Fold: 1 ==============================
+# using_tagger: bayes
+#  ori tag set: set([u'PRP$', u'VBG', u'VBD', u'VB', u'POS', u"''", u'VBP', u'WDT', u'JJ', u'WP', u'VBZ', u'DT', u'#', u'RP', u'$', u'NN', u'FW', u',', u'.', u'TO', u'PRP', u'RB', u'-LRB-', u':', u'NNS', u'NNP', u'``', u'WRB', u'CC', u'LS', u'PDT', u'RBS', u'RBR', u'VBN', u'-NONE-', u'EX', u'IN', u'WP$', u'CD', u'MD', u'NNPS', u'-RRB-', u'JJS', u'JJR', u'UH'])
+# test tag set: set([u'PRP$', u'VBG', u'VBD', u'VB', u'POS', u"''", u'VBP', u'WDT', u'JJ', u'WP', u'VBZ', u'DT', u'#', u'RP', u'$', u'NN', u',', u'.', u'TO', u'PRP', u'RB', u'-LRB-', u':', u'NNS', u'NNP', u'``', u'WRB', u'CC', u'PDT', u'RBR', u'VBN', u'-NONE-', u'EX', u'IN', u'WP$', u'CD', u'MD', u'NNPS', u'-RRB-', u'JJS', u'JJR'])
+#     Accuracy: 0.923553302417
+#    Precision: 1.0
+#       Recall: 0.911111111111
+#    F-Measure: 0.953488372093
+#        |                                  -                             |
+#        |                                  N                             |
+#        |                                  O                             |
+#        |                    N             N      N                      |
+#        |      N      I      N      D      E      N      J               |
+#        |      N      N      P      T      -      S      J      ,      . |
+# -------+----------------------------------------------------------------+
+#     NN | <10.6%>  0.1%   0.2%   0.0%      .   0.0%   0.7%      .      . |
+#     IN |      .  <9.3%>  0.0%      .      .      .   0.0%      .      . |
+#    NNP |   0.2%   0.0%  <7.9%>  0.0%      .   0.1%   0.4%      .      . |
+#     DT |   0.0%   0.1%   0.0%  <8.3%>     .      .      .      .      . |
+# -NONE- |      .      .      .      .  <6.5%>     .      .      .      . |
+#    NNS |   0.0%      .   0.0%      .      .  <5.9%>  0.0%      .      . |
+#     JJ |   0.3%   0.0%   0.1%   0.0%      .   0.0%  <4.7%>     .      . |
+#      , |      .      .      .      .      .      .      .  <5.1%>     . |
+#      . |      .      .      .      .      .      .      .      .  <3.7%>|
+# -------+----------------------------------------------------------------+
+# (row = reference; col = test)
+
+# ==============================================================================
+# ============================== Evaluate Fold: 2 ==============================
+# using_tagger: bayes
+#  ori tag set: set([u'PRP$', u'VBG', u'VBD', u'``', u',', u"''", u'VBP', u'WDT', u'JJ', u'WP', u'VBZ', u'DT', u'#', u'RP', u'$', u'NN', u'FW', u'POS', u'.', u'TO', u'PRP', u'RB', u'-LRB-', u':', u'NNS', u'NNP', u'VB', u'WRB', u'CC', u'PDT', u'RBS', u'RBR', u'VBN', u'-NONE-', u'EX', u'IN', u'WP$', u'CD', u'MD', u'NNPS', u'-RRB-', u'JJS', u'JJR'])
+# test tag set: set([u'PRP$', u'VBG', u'VBD', u'``', u',', u"''", u'VBP', u'VBN', u'JJ', u'WP', u'VBZ', u'DT', u'#', u'RP', u'$', u'NN', u'POS', u'.', u'TO', u'PRP', u'RB', u'-LRB-', u':', u'NNS', u'NNP', u'VB', u'WRB', u'CC', u'LS', u'PDT', u'RBS', u'RBR', u'CD', u'-NONE-', u'EX', u'IN', u'WP$', u'MD', u'NNPS', u'-RRB-', u'JJS', u'JJR', u'WDT'])
+#     Accuracy: 0.925354474767
+#    Precision: 0.976744186047
+#       Recall: 0.976744186047
+#    F-Measure: 0.976744186047
+#        |                                  -                             |
+#        |                                  N                             |
+#        |                                  O                             |
+#        |                    N             N      N                      |
+#        |      N      I      N      D      E      N      J      C        |
+#        |      N      N      P      T      -      S      J      D      , |
+# -------+----------------------------------------------------------------+
+#     NN | <11.6%>  0.1%   0.2%   0.0%   0.0%   0.1%   0.6%   0.1%      . |
+#     IN |   0.0%  <9.4%>  0.0%   0.0%      .   0.0%   0.0%      .      . |
+#    NNP |   0.3%   0.0%  <7.1%>  0.0%      .   0.2%   0.4%   0.0%      . |
+#     DT |   0.0%   0.0%      .  <7.7%>     .      .      .      .      . |
+# -NONE- |      .      .      .      .  <6.6%>     .      .      .      . |
+#    NNS |   0.0%      .   0.0%      .      .  <5.8%>     .      .      . |
+#     JJ |   0.2%   0.0%   0.1%   0.0%      .   0.0%  <4.7%>  0.0%      . |
+#     CD |   0.0%      .   0.0%      .   0.0%   0.0%   0.0%  <4.9%>     . |
+#      , |      .      .      .      .      .      .      .      .  <4.8%>|
+# -------+----------------------------------------------------------------+
+# (row = reference; col = test)
+
+# ==============================================================================
+# [Finished in 395.5s]
+
+# HMM
+# ============================== Evaluate Fold: 0 ==============================
+# using_tagger: hmm
+#  ori tag set: set([u'PRP$', u'VBG', u'VBD', u'``', u'VBN', u'POS', u"''", u'VBP', u'WDT', u'JJ', u'WP', u'VBZ', u'DT', u'RP', u'$', u'NN', u'FW', u',', u'.', u'TO', u'PRP', u'RB', u'-LRB-', u':', u'NNS', u'NNP', u'VB', u'WRB', u'CC', u'LS', u'PDT', u'RBS', u'RBR', u'CD', u'-NONE-', u'EX', u'IN', u'WP$', u'MD', u'NNPS', u'-RRB-', u'JJS', u'JJR', u'SYM', u'UH'])
+# test tag set: set([u'PRP$'])
+#     Accuracy: 0.00823753055128
+#    Precision: 1.0
+#       Recall: 0.0222222222222
+#    F-Measure: 0.0434782608696
+#        |                                  -                             |
+#        |                                  N                             |
+#        |                                  O                             |
+#        |             N                    N             N               |
+#        |      N      N      I      D      E      J      N               |
+#        |      N      P      N      T      -      J      S      ,      . |
+# -------+----------------------------------------------------------------+
+#     NN |     <.>     .      .      .      .      .      .      .      . |
+#    NNP |      .     <.>     .      .      .      .      .      .      . |
+#     IN |      .      .     <.>     .      .      .      .      .      . |
+#     DT |      .      .      .     <.>     .      .      .      .      . |
+# -NONE- |      .      .      .      .     <.>     .      .      .      . |
+#     JJ |      .      .      .      .      .     <.>     .      .      . |
+#    NNS |      .      .      .      .      .      .     <.>     .      . |
+#      , |      .      .      .      .      .      .      .     <.>     . |
+#      . |      .      .      .      .      .      .      .      .     <.>|
+# -------+----------------------------------------------------------------+
+# (row = reference; col = test)
+
+# ==============================================================================
+# ============================== Evaluate Fold: 1 ==============================
+# using_tagger: hmm
+#  ori tag set: set([u'PRP$', u'VBG', u'VBD', u'VB', u'POS', u"''", u'VBP', u'WDT', u'JJ', u'WP', u'VBZ', u'DT', u'#', u'RP', u'$', u'NN', u'FW', u',', u'.', u'TO', u'PRP', u'RB', u'-LRB-', u':', u'NNS', u'NNP', u'``', u'WRB', u'CC', u'LS', u'PDT', u'RBS', u'RBR', u'VBN', u'-NONE-', u'EX', u'IN', u'WP$', u'CD', u'MD', u'NNPS', u'-RRB-', u'JJS', u'JJR', u'UH'])
+# test tag set: set([u'PRP$'])
+#     Accuracy: 0.00823803900107
+#    Precision: 1.0
+#       Recall: 0.0222222222222
+#    F-Measure: 0.0434782608696
+#        |                                  -                             |
+#        |                                  N                             |
+#        |                                  O                             |
+#        |                    N             N      N                      |
+#        |      N      I      N      D      E      N      J               |
+#        |      N      N      P      T      -      S      J      ,      . |
+# -------+----------------------------------------------------------------+
+#     NN |     <.>     .      .      .      .      .      .      .      . |
+#     IN |      .     <.>     .      .      .      .      .      .      . |
+#    NNP |      .      .     <.>     .      .      .      .      .      . |
+#     DT |      .      .      .     <.>     .      .      .      .      . |
+# -NONE- |      .      .      .      .     <.>     .      .      .      . |
+#    NNS |      .      .      .      .      .     <.>     .      .      . |
+#     JJ |      .      .      .      .      .      .     <.>     .      . |
+#      , |      .      .      .      .      .      .      .     <.>     . |
+#      . |      .      .      .      .      .      .      .      .     <.>|
+# -------+----------------------------------------------------------------+
+# (row = reference; col = test)
+
+# ==============================================================================
+# ============================== Evaluate Fold: 2 ==============================
+# using_tagger: hmm
+#  ori tag set: set([u'PRP$', u'VBG', u'VBD', u'``', u',', u"''", u'VBP', u'WDT', u'JJ', u'WP', u'VBZ', u'DT', u'#', u'RP', u'$', u'NN', u'FW', u'POS', u'.', u'TO', u'PRP', u'RB', u'-LRB-', u':', u'NNS', u'NNP', u'VB', u'WRB', u'CC', u'PDT', u'RBS', u'RBR', u'VBN', u'-NONE-', u'EX', u'IN', u'WP$', u'CD', u'MD', u'NNPS', u'-RRB-', u'JJS', u'JJR'])
+# test tag set: set([u'PRP$'])
+#     Accuracy: 0.0063119377954
+#    Precision: 1.0
+#       Recall: 0.0232558139535
+#    F-Measure: 0.0454545454545
+#        |                                  -                             |
+#        |                                  N                             |
+#        |                                  O                             |
+#        |                    N             N      N                      |
+#        |      N      I      N      D      E      N      J      C        |
+#        |      N      N      P      T      -      S      J      D      , |
+# -------+----------------------------------------------------------------+
+#     NN |     <.>     .      .      .      .      .      .      .      . |
+#     IN |      .     <.>     .      .      .      .      .      .      . |
+#    NNP |      .      .     <.>     .      .      .      .      .      . |
+#     DT |      .      .      .     <.>     .      .      .      .      . |
+# -NONE- |      .      .      .      .     <.>     .      .      .      . |
+#    NNS |      .      .      .      .      .     <.>     .      .      . |
+#     JJ |      .      .      .      .      .      .     <.>     .      . |
+#     CD |      .      .      .      .      .      .      .     <.>     . |
+#      , |      .      .      .      .      .      .      .      .     <.>|
+# -------+----------------------------------------------------------------+
+# (row = reference; col = test)
+
+# ==============================================================================
+# [Finished in 268.8s]
