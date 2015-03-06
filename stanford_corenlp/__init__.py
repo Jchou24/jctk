@@ -11,7 +11,7 @@ class StanfordNLP:
     def parse(self, text):
         return json.loads(self.server.parse(text))
 
-class nlp():
+class StanfordParser():
     def __init__(self, ip="127.0.0.1",port=8080):
         try:
             self.parser = StanfordNLP(ip,port)
@@ -32,5 +32,5 @@ class nlp():
             self.parser.parse(text)
 
 if __name__ == '__main__':
-    parser = nlp()
+    parser = StanfordParser()
     pprint( parser.parse("Hello world!  It is so beautiful.") )
