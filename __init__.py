@@ -1,2 +1,5 @@
 from text_processing import *
-from stanford_corenlp import StanfordParser
+try:
+	from stanford_corenlp import StanfordParser
+except:
+	pass
